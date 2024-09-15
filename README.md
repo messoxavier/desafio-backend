@@ -1,4 +1,4 @@
-## Banco de dados MySQL
+## Banco de dados MySQL para o desafio = desafio_bd
 
 CREATE TABLE Usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
