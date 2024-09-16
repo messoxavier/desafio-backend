@@ -22,7 +22,6 @@ CREATE TABLE Professores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(11) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
     data_nascimento DATE NOT NULL,
     escola_id INT,
     FOREIGN KEY (escola_id) REFERENCES Escolas(id) ON DELETE SET NULL,
