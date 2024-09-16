@@ -5,11 +5,16 @@ require('dotenv').config();
 
 // Função de registro de usuário
 exports.register = async (req, res) => {
-    const { nome, cpf, senha, data_nascimento } = req.body; // Inclui data de nascimento
+    const { nome, cpf, senha, data_nascimento } = req.body;
 
     try {
         // Verifica se o usuário já existe
         pool.query('SELECT * FROM usuarios WHERE cpf = ?', [cpf], async (err, results) => {
+            
+            if (err) {
+                return res.status(500).json({ mensagem: 'Erro ao verificar o usuário' });
+            }
+
             if (results.length > 0) {
                 return res.status(409).json({ mensagem: 'Usuário já cadastrado' });
             }
