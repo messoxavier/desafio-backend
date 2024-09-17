@@ -2,7 +2,10 @@ const pool = require('../config/db');
 
 // Função para listar todos os professores
 const getProfessores = (callback) => {
-  const query = 'SELECT * FROM professores';
+  const query = `SELECT professores.id, professores.nome, professores.cpf, professores.data_nascimento, escolas.nome AS escola_nome
+    FROM professores
+    INNER JOIN escolas ON professores.escola_id = escolas.id
+  `;
   pool.query(query, (error, results) => {
     if (error) {
       return callback(error, null);

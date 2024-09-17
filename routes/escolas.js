@@ -7,6 +7,6 @@ const escolaController = require('../controllers/escolaController');
 router.get('/', escolaController.listarEscolas);
 
 // Rota para adicionar uma nova escola
-router.post('/', escolaController.adicionarEscola);
+router.post('/', escolaController.addEscola);
 
 module.exports = router;

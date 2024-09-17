@@ -3,7 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const escolaRoutes = require('./routes/escolas');
-const professorRoutes = require('./routes/professor')
+const professorRoutes = require('./routes/professor');
+const alunoRoutes = require('./routes/alunos');
 const db = require('./config/db');
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/escolas', escolaRoutes);
 app.use('/api/professores', professorRoutes);
+app.use('/api/alunos', alunoRoutes)
 
 // Testa a conexão com o banco de dados
 db.getConnection((err) => {
