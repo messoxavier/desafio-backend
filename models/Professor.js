@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 // Função para listar todos os professores
 const getProfessores = (callback) => {
-  const query = `SELECT professores.id, professores.nome, professores.cpf, professores.data_nascimento, escolas.nome AS escola_nome
+  const query = `SELECT professores.id, professores.nome, professores.cpf, professores.senha, professores.data_nascimento, escolas.nome AS escola_nome
     FROM professores
     INNER JOIN escolas ON professores.escola_id = escolas.id
   `;
@@ -16,7 +16,7 @@ const getProfessores = (callback) => {
 
 // Função para buscar professor pelo ID
 const getProfessorById = (id, callback) => {
-  const query = `SELECT professores.id, professores.nome, professores.cpf, professores.data_nascimento, professores.escola_id AS escola_nome
+  const query = `SELECT professores.id, professores.nome, professores.cpf, professores.senha, professores.data_nascimento, professores.escola_id AS escola_nome
     FROM professores
     INNER JOIN escolas ON professores.escola_id = escolas.id
     WHERE professores.id = ?
@@ -34,8 +34,8 @@ const getProfessorById = (id, callback) => {
 
 // Função para adicionar um novo professor
 const addProfessor = (professor, callback) => {
-  const query = 'INSERT INTO professores (nome, cpf, data_nascimento, escola_id) VALUES (?, ?, ?, ?)';
-  pool.query(query, [professor.nome, professor.cpf, professor.data_nascimento, professor.escola_id], (error, results) => {
+  const query = 'INSERT INTO professores (nome, cpf, senha, data_nascimento, escola_id) VALUES (?, ?, ?, ?, ?)';
+  pool.query(query, [professor.nome, professor.cpf, professor.senha, professor.data_nascimento, professor.escola_id], (error, results) => {
     if (error) {
       return callback(error, null);
     }
@@ -45,8 +45,8 @@ const addProfessor = (professor, callback) => {
 
 // Função para editar um professor
 const editProfessor = (id, professor, callback) => {
-  const query = 'UPDATE professores SET nome = ?, cpf = ?, data_nascimento = ?, escola_id = ? WHERE id = ?';
-  pool.query(query, [professor.nome, professor.cpf, professor.data_nascimento, professor.escola_id, id], (error, results) => {
+  const query = 'UPDATE professores SET nome = ?, cpf = ?, senha = ?, data_nascimento = ?, escola_id = ? WHERE id = ?';
+  pool.query(query, [professor.nome, professor.cpf, professor.senha, professor.data_nascimento, professor.escola_id, id], (error, results) => {
     if (error) {
       return callback(error, null);
     }

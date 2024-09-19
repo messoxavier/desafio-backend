@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
+const userModel = require('../models/Usuario');
 require('dotenv').config();
 
 // Função de registro de usuário
@@ -22,10 +23,7 @@ exports.register = async (req, res) => {
             // Gera o hash da senha
             const hashedPassword = await bcrypt.hash(senha, 10);
 
-            pool.query(
-                'INSERT INTO usuarios (nome, cpf, senha, data_nascimento) VALUES (?, ?, ?, ?)',
-                [nome, cpf, hashedPassword, data_nascimento],
-                (err, results) => {
+            userModel.addUser({ nome, cpf, senha: hashedPassword, data_nascimento }, (err, result) => {
                     if (err) {
                         return res.status(500).json({ mensagem: 'Erro ao registrar o usuário' });
                     }

@@ -1,4 +1,6 @@
 const professorModel = require('../models/Professor');
+const userModel = require('../models/Usuario');
+const bcrypt = require('bcrypt');
 
 // Função para listar todos os professores
 const getProfessores = (req, res) => {
@@ -26,36 +28,44 @@ const getProfessorById = (req, res) => {
 
 // Função para adicionar um novo professor
 const addProfessor = (req, res) => {
-  const { nome, cpf, data_nascimento, escola_id } = req.body;
+  const { nome, cpf, senha, data_nascimento, escola_id } = req.body;
 
 
   // Validação dos dados recebidos
-  if (!nome || !cpf || !data_nascimento || !escola_id) {
+  if (!nome || !cpf || !senha || !data_nascimento || !escola_id) {
     return res.status(400).json({ error: 'Por favor, preencha todos os campos obrigatórios: nome, cpf, data_nascimento, escola_id' });
   }
 
-  const professor = { nome, cpf, data_nascimento, escola_id };
+  const professor = { nome, cpf, senha, data_nascimento, escola_id };
 
   professorModel.addProfessor(professor, (error, result) => {
     if (error) {
       console.error('Erro ao adicionar professor:', error);
       return res.status(500).json({ error: 'Erro ao adicionar professor' });
     }
+
+    const hashedPassword = bcrypt.hashSync(senha, 10);
+    userModel.addUser({ nome, cpf, senha: hashedPassword, data_nascimento }, (err, userId) => {
+      if (err) {
+        console.error('Erro ao adicionar usuário:', err);
+        return res.status(500).json({ error: 'Erro ao adicionar usuário' });
+      }
     res.status(201).json({ message: 'Professor adicionado com sucesso', id: result });
   });
+});
 };
 
 // Função para editar um professor
 const editProfessor = (req, res) => {
   const { id } = req.params;
-  const { nome, cpf, data_nascimento, escola_id } = req.body;
+  const { nome, cpf, senha, data_nascimento, escola_id } = req.body;
 
   // Validação dos dados recebidos
-  if (!nome || !cpf || !data_nascimento || !escola_id) {
+  if (!nome || !cpf || !senha || !data_nascimento || !escola_id) {
     return res.status(400).json({ error: 'Por favor, preencha todos os campos obrigatórios: nome, cpf, data_nascimento, escola_id' });
   }
 
-  const professor = { nome, cpf, data_nascimento, escola_id };
+  const professor = { nome, cpf, senha, data_nascimento, escola_id };
 
   professorModel.editProfessor(id, professor, (error, result) => {
     if (error) {
