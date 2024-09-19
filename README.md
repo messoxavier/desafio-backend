@@ -6,6 +6,7 @@ CREATE TABLE Usuarios (
     cpf VARCHAR(11) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     data_nascimento DATE NOT NULL,
+    professor_id int(11) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -22,6 +23,7 @@ CREATE TABLE Professores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(11) NOT NULL UNIQUE,
+    senha varchar(11) NOT NULL,
     data_nascimento DATE NOT NULL,
     escola_id INT,
     FOREIGN KEY (escola_id) REFERENCES Escolas(id) ON DELETE SET NULL,

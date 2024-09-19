@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const bcrypt = require('bcrypt');
 
 // Função para listar todos os professores
 const getProfessores = (callback) => {
@@ -34,12 +35,18 @@ const getProfessorById = (id, callback) => {
 
 // Função para adicionar um novo professor
 const addProfessor = (professor, callback) => {
+  bcrypt.hash(professor.senha, 10, (err, hashedPassword) => {
+    if (err) {
+      return callback(err, null);
+    }
+
   const query = 'INSERT INTO professores (nome, cpf, senha, data_nascimento, escola_id) VALUES (?, ?, ?, ?, ?)';
-  pool.query(query, [professor.nome, professor.cpf, professor.senha, professor.data_nascimento, professor.escola_id], (error, results) => {
+  pool.query(query, [professor.nome, professor.cpf, hashedPassword, professor.data_nascimento, professor.escola_id], (error, results) => {
     if (error) {
       return callback(error, null);
     }
     return callback(null, results.insertId);
+  });
   });
 };
 

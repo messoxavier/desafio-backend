@@ -38,19 +38,19 @@ const addProfessor = (req, res) => {
 
   const professor = { nome, cpf, senha, data_nascimento, escola_id };
 
-  professorModel.addProfessor(professor, (error, result) => {
+  professorModel.addProfessor(professor, (error, professorId) => {
     if (error) {
       console.error('Erro ao adicionar professor:', error);
       return res.status(500).json({ error: 'Erro ao adicionar professor' });
     }
 
     const hashedPassword = bcrypt.hashSync(senha, 10);
-    userModel.addUser({ nome, cpf, senha: hashedPassword, data_nascimento }, (err, userId) => {
+    userModel.addUser({ nome, cpf, senha: hashedPassword, data_nascimento, professor_id: professorId }, (err, userId) => {
       if (err) {
         console.error('Erro ao adicionar usuário:', err);
         return res.status(500).json({ error: 'Erro ao adicionar usuário' });
       }
-    res.status(201).json({ message: 'Professor adicionado com sucesso', id: result });
+    res.status(201).json({ message: 'Professor adicionado com sucesso', professorId });
   });
 });
 };
@@ -80,13 +80,33 @@ const editProfessor = (req, res) => {
 const deleteProfessor = (req, res) => {
   const { id } = req.params;
 
+  userModel.getUserByProfessorId(id, (error, userResult) => {
+    if (error) {
+      console.error('Erro ao buscar o usuário associado ao professor:', error);
+      return res.status(500).json({ error: 'Erro ao buscar usuário' });
+    }
+
+    if (userResult) {
+      const userId = userResult.id;
+
   professorModel.deleteProfessor(id, (error, result) => {
     if (error) {
       console.error('Erro ao deletar professor:', error);
       return res.status(500).json({ error: 'Erro ao deletar professor' });
     }
+
+    userModel.deleteUser(userId, (error, result) => {
+      if (error) {
+        console.error('Erro ao deletar usuário associado ao professor:', error);
+        return res.status(500).json({ error: 'Erro ao deletar usuário' });
+      }
     res.status(204).send();
   });
+});
+    }else {
+      return res.status(404).json({ error: 'Usuário associado ao professor não encontrado'});
+    }
+});
 };
 
 module.exports = {
